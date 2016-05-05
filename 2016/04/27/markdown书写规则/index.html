@@ -91,7 +91,7 @@
 标题  #一级标题 
   ##二级标题  ……">
 <meta property="og:image" content="http://7xtdo0.com2.z0.glb.clouddn.com/20120120093205_T34rY.thumb.600_0.jpg">
-<meta property="og:updated_time" content="2016-05-05T08:56:17.138Z">
+<meta property="og:updated_time" content="2016-05-05T09:00:27.383Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="markdown书写规则">
 <meta name="twitter:description" content="对markdown语法规则进行记录      
@@ -330,11 +330,11 @@
 <ol>
 <li>one</li>
 <li>two</li>
-<li>three</li>
-</ol>
-<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><blockquote>
+<li>three<br>#代办列表<br>-[]不勾选<br>-[x]勾选<h1 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h1><blockquote>
 <p>此处是引用，加&gt;即可</p>
 </blockquote>
+</li>
+</ol>
 <h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><h2 id="网址链接"><a href="#网址链接" class="headerlink" title="网址链接"></a>网址链接</h2><p>[显示字]+(网址)</p>
 <p><a href="www.baidu.com">Baidu</a></p>
 <h2 id="图片链接"><a href="#图片链接" class="headerlink" title="图片链接"></a>图片链接</h2><p>!+[ ]+(网址)</p>
@@ -352,6 +352,7 @@
 <p>{ % codeblock [lang:language] [title] [url] [link text] % }<br>code snippet<br>{ % endcodeblock % }</p>
 </blockquote>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'redcarpet'</span></span><br><span class="line">markdown = Redcarpet.new(<span class="string">"Hello World!"</span>)</span><br><span class="line">puts markdown.to_html</span><br></pre></td></tr></table></figure>
+<p>#转义字符<br>转义字符为\</p>
 
       
     </div>
