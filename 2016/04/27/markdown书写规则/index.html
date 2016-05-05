@@ -93,7 +93,7 @@
   ##二级标题
   ……">
 <meta property="og:image" content="http://7xtdo0.com2.z0.glb.clouddn.com/20120120093205_T34rY.thumb.600_0.jpg">
-<meta property="og:updated_time" content="2016-05-05T08:35:46.790Z">
+<meta property="og:updated_time" content="2016-05-05T08:38:03.335Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="markdown书写规则">
 <meta name="twitter:description" content="对markdown语法规则进行记录      
@@ -351,8 +351,11 @@
 <p>我是一个</p>
 <hr>
 <p>小苹果</p>
-<h1 id="代码框"><a href="#代码框" class="headerlink" title="代码框"></a>代码框</h1><p>用两个`把中间代码抱起来</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line"><span class="keyword">require</span> <span class="string">'redcarpet'</span></span><br><span class="line">markdown = Redcarpet.new(<span class="string">"Hello World!"</span>)</span><br><span class="line">puts markdown.to_html</span><br></pre></td></tr></table></figure>
+<h1 id="代码框"><a href="#代码框" class="headerlink" title="代码框"></a>代码框</h1><p>用三个`把中间代码包起来，若之后跟着语言，则可以高亮显示，或者采用以下方式</p>
+<blockquote>
+<figure class="highlight plain"><figcaption><span>[] [title] [url] [link text]</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;code snippet</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'redcarpet'</span></span><br><span class="line">markdown = Redcarpet.new(<span class="string">"Hello World!"</span>)</span><br><span class="line">puts markdown.to_html</span><br></pre></td></tr></table></figure>
 
       
     </div>
