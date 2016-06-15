@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2016/06/14/关于python中的re-sub-函数/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="sub(pattern, repl, string, count=0, flags=0)　　Return the string obtained by replacing the leftmost　　non-overlapping occurrences of the pattern in string by the　　replacement repl.  repl can be either">
-<meta property="og:updated_time" content="2016-06-15T08:27:17.818Z">
+<meta property="og:updated_time" content="2016-06-15T08:29:24.609Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于python中的re.sub()函数">
 <meta name="twitter:description" content="sub(pattern, repl, string, count=0, flags=0)　　Return the string obtained by replacing the leftmost　　non-overlapping occurrences of the pattern in string by the　　replacement repl.  repl can be either">
@@ -339,7 +339,7 @@
 <p><em>*<br>对于markup.py中15行的代码，起初我认为是层层调用并return，最终这句话可写成<br>re.sub(r’\\</em>(.+?)\*‘,’&lt;em&gt;%s&lt;\em&gt;’%match.group(1),block)，因而不太能理解match<br>的定义赋值方式，后来查询了re.sub()的参数解释，误以为此处函数会将匹配对象传递<br>给match，因而这句话得以运行。但最后却发现此处’&lt;em&gt;%s&lt;\em&gt;’%match.group(1)<br>为一个字符串，因为并不会被传递匹配对象。</p>
 <p>比如，在python解释器中运行<br>re.sub(r’\*  (.+?)\*‘,’&lt;em&gt;%s&lt;\em&gt;’%match.group(1),’abc*123*abc’)，<br>仍然得到报错：match未定义。</p>
 <p>后经询问后发现，此处15行代码不应return代入后理解，而是：handler.sub(name)<br>会返回substitution的函数名，此处为re.sub(r’\*(.+?)\*‘,substitution,block)，中间为一函<br>数，因而此行代码运行时匹配对象会传递给substitution函数，作为match的值，从而成功运行。</p>
-<p>比如，在python解释器中运行re.sub(r’\*(.+?)\*‘,sub_emphasis,’abc*123*abc’)<br>（前面已输入sub_emphasis(match)的函数），会得到abc&lt;em&gt;123abc。<br>**</p>
+<p>比如，在python解释器中运行re.sub(r’\*(.+?)\*‘,sub_emphasis,’abc*123*abc’)<br>（前面已输入sub_emphasis(match)的函数），会得到abc&lt;em&gt;123&lt;/em&gt;abc。<br>**</p>
 <p>上述代码在命令窗口中的运行命令$ python markup_py <test_input.txt> test_output.html</test_input.txt></p>
 
       
