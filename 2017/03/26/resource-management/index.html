@@ -64,7 +64,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="effective c++,c++ primer," />
+  <meta name="keywords" content="<< effective c++ >>,<< c++ primer >>," />
 
 
 
@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/26/resource-management/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
-<meta property="og:updated_time" content="2017-03-26T14:46:25.249Z">
+<meta property="og:updated_time" content="2017-03-26T15:04:44.715Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="resource management">
 <meta name="twitter:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
@@ -307,9 +307,19 @@
 
       
         <p><strong>primer中第十二章动态内存，effective第三章及6,7条款</strong><br><a id="more"></a></p>
-<h1 id="effective-c"><a href="#effective-c" class="headerlink" title="effective c++"></a>effective c++</h1><p>对于资源，一旦用了它，将来必须还给系统。动态分配内存是c++中最常使用的资源之一<br>（未及时归还，会导致内存泄露），但内存支持必须管理的众多资源之一（互斥锁，sockets等）。<br>内存仅为资源的一种，但被特殊对待（专门的new/delete操作符，且可自定义）</p>
-<h2 id="条款13：以对象管理资源"><a href="#条款13：以对象管理资源" class="headerlink" title="条款13：以对象管理资源"></a>条款13：以对象管理资源</h2><blockquote>
-<font color="red">为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源。</font></blockquote>
+<h1 id="effective-c"><a href="#effective-c" class="headerlink" title="effective c++"></a>effective c++</h1><p>对于资源，一旦用了它，将来必须还给系统。动态分配内存是c++中最常使用的资源之一（未及时归还，会导致内存泄露），但内存只是必须管理的众多资源之一（互斥锁，sockets等）。<br>内存仅为资源的一种，但被特殊对待（专门的new/delete操作符，且可自定义）</p>
+<h2 id="条款13：以对象管理资源"><a href="#条款13：以对象管理资源" class="headerlink" title="条款13：以对象管理资源"></a>条款13：以对象管理资源</h2><ol>
+<li>若利用工厂函数（此处涉及设计模式，条款7有提及）供应特定我们需要的对象，若对资源的管理仅靠delete操作，则若在资源创建语句和delete释放语句间有continue或<br>goto语句过早退出，或抛出异常，delete不会被执行，则不仅存储对象的内存和对象所包含的资源均会泄露。</li>
+<li>把资源放进对象，便可以来c++的“析构函数自动调用机制”确保资源被释放。</li>
+<li>以对象管理资源的两个关键想法：<ul>
+<li>获得资源后立即放进对象：RAII(Resources Acquisition Is Initialization)，总在获得一笔资源后于同一语句内以它初始化或赋值某个管理对象，总之，资源总在获得同时立刻放进<br>管理对象内。<font color="red">shared_ptr和unique_ptr便有用指向动态内存的指针直接初始化资源的构造函数</font></li>
+<li>管理对象运用析构函数确保资源被释放：不论控制流如何离开区块，对象只要离开作用域被销毁就会自动调用析构函数释放资源。（<font color="yellow">资源释放动作可能导致抛出异常，条款8有提及</font>）<blockquote>
+<p><font color="red">为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源。</font><br><font color="red">两个最常被使用的RAIIclasses分别是shared_ptr和auto_ptr。前者通常是较佳选择，因为其copy行为比较直观。若选择auto_ptr，复制动作会使它（被复制物）指向null</font><br>c++11中使用的是unique_ptr，其不允许复制操作（具体见之后）。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
 
       
     </div>
@@ -330,9 +340,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/effective-c/" rel="tag">#effective c++</a>
+            <a href="/tags/effective-c/" rel="tag">#<< effective c++ >></a>
           
-            <a href="/tags/c-primer/" rel="tag">#c++ primer</a>
+            <a href="/tags/c-primer/" rel="tag">#<< c++ primer >></a>
           
         </div>
       
@@ -432,7 +442,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
