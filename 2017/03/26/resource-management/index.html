@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/26/resource-management/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
-<meta property="og:updated_time" content="2017-03-26T15:38:32.321Z">
+<meta property="og:updated_time" content="2017-03-26T15:39:35.407Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="resource management">
 <meta name="twitter:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
@@ -322,7 +322,7 @@
 </blockquote>
 </li>
 </ol>
-<h2 id="条款14：在资源管理类中小心copying行为"><a href="#条款14：在资源管理类中小心copying行为" class="headerlink" title="条款14：在资源管理类中小心copying行为"></a>条款14：在资源管理类中小心copying行为</h2><p> 当一个RAII对象被复制，会发生什么？</p>
+<h2 id="条款14：在资源管理类中小心copying行为"><a href="#条款14：在资源管理类中小心copying行为" class="headerlink" title="条款14：在资源管理类中小心copying行为"></a>条款14：在资源管理类中小心copying行为</h2><p>当一个RAII对象被复制，会发生什么？</p>
 <ol>
 <li>禁止复制：通过将copying操作声明为private（条款6）。（unique_ptr）</li>
 <li>对底层资源使用“引用计数法”：shared_ptr（其缺省行为是引用次数为0时删除所指物有时非所需行为，如解除同步mutex锁定），其允许指定“删除器”。<br>shared_ptr删除器是运行时传入构造函数的参数，而unique_ptr的自定义删除器是作为模板参数来传入的，即在编译时绑定（primer P599）</li>
