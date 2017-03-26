@@ -64,7 +64,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="<< effective c++ >>,<< c++ primer >>," />
+  <meta name="keywords" content="effective c++,c++ primer," />
 
 
 
@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/26/resource-management/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
-<meta property="og:updated_time" content="2017-03-26T14:43:12.992Z">
+<meta property="og:updated_time" content="2017-03-26T14:46:25.249Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="resource management">
 <meta name="twitter:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
@@ -307,9 +307,10 @@
 
       
         <p><strong>primer中第十二章动态内存，effective第三章及6,7条款</strong><br><a id="more"></a></p>
-<h1 id="effective-c"><a href="#effective-c" class="headerlink" title="effective c++"></a>effective c++</h1><p>对于资源，一旦用了它，将来必须还给系统。动态分配内存是c++中最常使用的资源之一<br>（未及时归还，会导致内存泄露），但内存支持必须管理的众多资源之一（互斥锁，sockets等）。</p>
-<p><font color="red">内存仅为资源的一种，但被特殊对待（专门的new/delete操作符，且可自定义）</font></p>
-<h2 id="条款13：以对象管理资源"><a href="#条款13：以对象管理资源" class="headerlink" title="条款13：以对象管理资源"></a>条款13：以对象管理资源</h2>
+<h1 id="effective-c"><a href="#effective-c" class="headerlink" title="effective c++"></a>effective c++</h1><p>对于资源，一旦用了它，将来必须还给系统。动态分配内存是c++中最常使用的资源之一<br>（未及时归还，会导致内存泄露），但内存支持必须管理的众多资源之一（互斥锁，sockets等）。<br>内存仅为资源的一种，但被特殊对待（专门的new/delete操作符，且可自定义）</p>
+<h2 id="条款13：以对象管理资源"><a href="#条款13：以对象管理资源" class="headerlink" title="条款13：以对象管理资源"></a>条款13：以对象管理资源</h2><blockquote>
+<font color="red">为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源。</font></blockquote>
+
       
     </div>
     
@@ -329,9 +330,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/effective-c/" rel="tag">#<< effective c++ >></a>
+            <a href="/tags/effective-c/" rel="tag">#effective c++</a>
           
-            <a href="/tags/c-primer/" rel="tag">#<< c++ primer >></a>
+            <a href="/tags/c-primer/" rel="tag">#c++ primer</a>
           
         </div>
       
