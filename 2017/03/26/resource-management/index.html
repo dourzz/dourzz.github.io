@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/26/resource-management/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
-<meta property="og:updated_time" content="2017-03-26T15:37:36.856Z">
+<meta property="og:updated_time" content="2017-03-26T15:38:32.321Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="resource management">
 <meta name="twitter:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
@@ -317,12 +317,13 @@
 </ul>
 </li>
 <li>effective此处说auto_ptr具有特殊复制性质（通过copy构造函数或copy assignment操作符复制时），它们会变成null，而复制所得的指针将取得资源的唯一拥有权。这一诡异的复制行为导致受其管理的资源必须绝对没有一个以上的auto_ptr同时指向它。故STL容器不能容auto_ptr，因为其要求元素发挥正常的复制行为。<font color="green">c++11中使用的unique_ptr不允许拷贝或复制，个人猜想其也不能直接作为容器元素，查到资源有的说可以通过一点间接手段实现（move()函数）（待进一步了解）</font></li>
-<li><p>RCSP：引用计数型智慧指针，如shared_ptr（复制行为如预期，可被用于STL容器以及其他auto_ptr因为非传统复制行为而不适用处）。<font color="green">环状引用问题</font> </p>
-<blockquote>
+<li>RCSP：引用计数型智慧指针，如shared_ptr（复制行为如预期，可被用于STL容器以及其他auto_ptr因为非传统复制行为而不适用处）。<font color="green">环状引用问题</font> <blockquote>
 <p><font color="red">- 为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源。</font><br><font color="red">- 两个最常被使用的RAIIclasses分别是shared_ptr和auto_ptr。前者通常是较佳选择，因为其copy行为比较直观。若选择auto_ptr，复制动作会使它（被复制物）指向null</font><br>c++11中使用的是unique_ptr，其不允许复制操作（具体见之后）。</p>
 </blockquote>
-<h2 id="条款14：在资源管理类中小心copying行为"><a href="#条款14：在资源管理类中小心copying行为" class="headerlink" title="条款14：在资源管理类中小心copying行为"></a>条款14：在资源管理类中小心copying行为</h2><p>当一个RAII对象被复制，会发生什么？</p>
 </li>
+</ol>
+<h2 id="条款14：在资源管理类中小心copying行为"><a href="#条款14：在资源管理类中小心copying行为" class="headerlink" title="条款14：在资源管理类中小心copying行为"></a>条款14：在资源管理类中小心copying行为</h2><p> 当一个RAII对象被复制，会发生什么？</p>
+<ol>
 <li>禁止复制：通过将copying操作声明为private（条款6）。（unique_ptr）</li>
 <li>对底层资源使用“引用计数法”：shared_ptr（其缺省行为是引用次数为0时删除所指物有时非所需行为，如解除同步mutex锁定），其允许指定“删除器”。<br>shared_ptr删除器是运行时传入构造函数的参数，而unique_ptr的自定义删除器是作为模板参数来传入的，即在编译时绑定（primer P599）</li>
 <li>复制底部资源：需要资源管理类的理由是不需要时确保释放，而对复制任意数量的资源副本不做限制，此时复制资源管理对象应同时复制其所指资源（深度拷贝）<br>标准string类型的实现由指向heap内存的指针（指向组成string字符的存储地址）组成。这种字符串对象内含一个指针指向一块heap内存，当这样的string对象被复制时，不论指针还是所指内存都会有复件。</li>
