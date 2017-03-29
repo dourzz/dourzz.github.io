@@ -86,7 +86,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/03/26/resource-management/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
-<meta property="og:updated_time" content="2017-03-26T15:39:35.407Z">
+<meta property="og:updated_time" content="2017-03-29T15:45:32.538Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="resource management">
 <meta name="twitter:description" content="primer中第十二章动态内存，effective第三章及6,7条款">
@@ -316,7 +316,7 @@
 <li>管理对象运用析构函数确保资源被释放：不论控制流如何离开区块，对象只要离开作用域被销毁就会自动调用析构函数释放资源。（<font color="green">资源释放动作可能导致抛出异常，条款8有提及（待看）</font>）</li>
 </ul>
 </li>
-<li>effective此处说auto_ptr具有特殊复制性质（通过copy构造函数或copy assignment操作符复制时），它们会变成null，而复制所得的指针将取得资源的唯一拥有权。这一诡异的复制行为导致受其管理的资源必须绝对没有一个以上的auto_ptr同时指向它。故STL容器不能容auto_ptr，因为其要求元素发挥正常的复制行为。<font color="green">c++11中使用的unique_ptr不允许拷贝或复制，个人猜想其也不能直接作为容器元素，查到资源有的说可以通过一点间接手段实现（move()函数）（待进一步了解）</font></li>
+<li>effective此处说auto_ptr具有特殊复制性质（通过copy构造函数或copy assignment操作符复制时），它们会变成null，而复制所得的指针将取得资源的唯一拥有权。这一诡异的复制行为导致受其管理的资源必须绝对没有一个以上的auto_ptr同时指向它。故STL容器不能容auto_ptr，因为其要求元素发挥正常的复制行为。<font color="green">c++11中使用的unique_ptr不允许拷贝或复制，个人猜想其也不能直接作为容器元素，查到资源有的说可以通过一点间接手段实现（move()函数）（待进一步了解：primer P470提到在新标准中可用容器保存不可拷贝的类型，只要它们能被移动即可（IO类，unique_ptr类）。）</font></li>
 <li>RCSP：引用计数型智慧指针，如shared_ptr（复制行为如预期，可被用于STL容器以及其他auto_ptr因为非传统复制行为而不适用处）。<font color="green">环状引用问题</font> <blockquote>
 <p><font color="red">- 为防止资源泄露，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源。</font><br><font color="red">- 两个最常被使用的RAIIclasses分别是shared_ptr和auto_ptr。前者通常是较佳选择，因为其copy行为比较直观。若选择auto_ptr，复制动作会使它（被复制物）指向null</font><br>c++11中使用的是unique_ptr，其不允许复制操作（具体见之后）。</p>
 </blockquote>
@@ -328,8 +328,34 @@
 <li>对底层资源使用“引用计数法”：shared_ptr（其缺省行为是引用次数为0时删除所指物有时非所需行为，如解除同步mutex锁定），其允许指定“删除器”。<br>shared_ptr删除器是运行时传入构造函数的参数，而unique_ptr的自定义删除器是作为模板参数来传入的，即在编译时绑定（primer P599）</li>
 <li>复制底部资源：需要资源管理类的理由是不需要时确保释放，而对复制任意数量的资源副本不做限制，此时复制资源管理对象应同时复制其所指资源（深度拷贝）<br>标准string类型的实现由指向heap内存的指针（指向组成string字符的存储地址）组成。这种字符串对象内含一个指针指向一块heap内存，当这样的string对象被复制时，不论指针还是所指内存都会有复件。</li>
 <li>转移底部资源的拥有权：希望确保永远只有一个RAII对象指向一个未加工资源，即使RAII对象被复制也如此，此时资源拥有权从被复制物转移到目标物。（auto_ptr，unique_ptr的release函数）<blockquote>
-<font color="red">- 复制RAII对象必须一并复制其所管理的资源，故资源的copying行为决定RAII对象的copying行为</font><br><font color="red">- 普遍常见的RAII类copying行为是：抑制copying，实施引用计数法</font></blockquote>
+<font color="red">- 复制RAII对象必须一并复制其所管理的资源，故资源的copying行为决定RAII对象的copying行为</font><br><font color="red">- 普遍常见的RAII类copying行为是：抑制copying，实施引用计数法</font>
+
+</blockquote>
 </li>
+</ol>
+<h2 id="条款15：在资源管理类中提供对原始资源的访问"><a href="#条款15：在资源管理类中提供对原始资源的访问" class="headerlink" title="条款15：在资源管理类中提供对原始资源的访问"></a>条款15：在资源管理类中提供对原始资源的访问</h2><p>将函数将RAII class对象转换为其所含之原始资源，有显式转换和隐式转换两个做法。</p>
+<ol>
+<li>显式转换：通过对RAII class对象成员函数的调用（如shared_ptr的get()函数）。</li>
+<li>隐式转换：①重载了指针取值操作符（operator-&gt;和operator*） <font color="red">②通过隐式转换函数（用户定义的类类型转换：转换构造函数和类型转换运算符。后者定义为成员函数，传递this指针。这一块内容不太熟，重看primer时注意）</font></li>
+<li>隐式转换容易增加“非故意类型转换”发生机会，显式转换用法比较繁琐。RAII class并不是为了封装某物而存在，是为了确保资源释放一定会发生。（某些例外，如shared_ptr会有较松散的底层资源封装行为，如将引用计数机构封装起来）<blockquote>
+<font color="red">- APIS往往要求访问原始资源，所以每一个RAII class应该提供一个“取得其所管理之资源”的方法。</font><br><font color="red">- 对原始资源的访问可能经由显式转换或隐式转换。一般而言显式转换比较安全，但隐式转换对客户比较方便。</font>
+
+</blockquote>
+</li>
+</ol>
+<h2 id="条款16：成对使用new和delete时要采取相同形式"><a href="#条款16：成对使用new和delete时要采取相同形式" class="headerlink" title="条款16：成对使用new和delete时要采取相同形式"></a>条款16：成对使用new和delete时要采取相同形式</h2><ol>
+<li>使用new和delete操作符都会先调用operator new函数分配内存再调用构造函数或先调用析构函数再调用operator delete函数释放内存。</li>
+<li>通过使用delete[]高速delete内存中存的是数组，且有一个记录数组大小的值，这是将要调用析构函数的次数。<br>3.若调用了typedf另命名数组（typedef std::string AddressLines[4]; std::string* pal=new AddressLines;），则应当注意释放时使用delete[]，最好是尽量不对数组形式做typedefs动作。<blockquote>
+<font color="red">- 若你在new表达式中使用[]，必须在相应的delete表达式中也使用[]。如果你再new表达式中不使用[]，一定不要在相应的delete表达式中使用[]。</font>
+
+</blockquote>
+</li>
+</ol>
+<h2 id="条款17：以独立语句将newed对象置入智能指针"><a href="#条款17：以独立语句将newed对象置入智能指针" class="headerlink" title="条款17：以独立语句将newed对象置入智能指针"></a>条款17：以独立语句将newed对象置入智能指针</h2><ol>
+<li>shared_ptr以原始指针为参数的构造函数是explicit的。</li>
+<li>假设有函数 void processWidget(shared_ptr<widget>pw, int priority);后一个参数通过int priority();函数的返回值传参。<br>则若调用形式为 processWidget(shared_ptr<widget>(new Widget),priority());容易发生内存泄露，因为调用priority函数和执行new操作然后调用shared_ptr构造函数的顺序并不确定，若priority函数的调用发生错误，且此时new操作已执行但尚未被交给资源管理对象就会出错。故应当将newed对象放入智能指针的操作单独语句写，这样其执行顺序必在priority函数前。<blockquote>
+<font color="red">- 以独立语句将newed对象存储于（置入）智能指针内。若不这样做，一旦异常被抛出，有可能导致难以察觉的资源泄露。</font></blockquote>
+</widget></widget></li>
 </ol>
 
       
@@ -493,7 +519,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#effective-c"><span class="nav-number">1.</span> <span class="nav-text">effective c++</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#条款13：以对象管理资源"><span class="nav-number">1.1.</span> <span class="nav-text">条款13：以对象管理资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条款14：在资源管理类中小心copying行为"><span class="nav-number">1.2.</span> <span class="nav-text">条款14：在资源管理类中小心copying行为</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#effective-c"><span class="nav-number">1.</span> <span class="nav-text">effective c++</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#条款13：以对象管理资源"><span class="nav-number">1.1.</span> <span class="nav-text">条款13：以对象管理资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条款14：在资源管理类中小心copying行为"><span class="nav-number">1.2.</span> <span class="nav-text">条款14：在资源管理类中小心copying行为</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条款15：在资源管理类中提供对原始资源的访问"><span class="nav-number">1.3.</span> <span class="nav-text">条款15：在资源管理类中提供对原始资源的访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条款16：成对使用new和delete时要采取相同形式"><span class="nav-number">1.4.</span> <span class="nav-text">条款16：成对使用new和delete时要采取相同形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条款17：以独立语句将newed对象置入智能指针"><span class="nav-number">1.5.</span> <span class="nav-text">条款17：以独立语句将newed对象置入智能指针</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
