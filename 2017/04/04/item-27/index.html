@@ -94,7 +94,7 @@
 - 若可以，尽量避免转型，特别在注重效率的代码中避免dynamic_casts。若有设计需要转型动作，尝试发展无需转型的替代设计。- 若转型必要，试着将其隐藏在某函数之后。用户可调用其而无需将转型放入自己代码中。- 宁可使用C++-style转型，也不要使用旧式转型。前者容易分辨，">
 <meta property="og:image" content="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170404212711.jpg">
 <meta property="og:image" content="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE2.jpg">
-<meta property="og:updated_time" content="2017-04-04T13:53:39.087Z">
+<meta property="og:updated_time" content="2017-04-04T13:54:56.605Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="item 27">
 <meta name="twitter:description" content="关于类的成员函数有不理解处需后续阅读相关书籍后理解（红色）
@@ -344,11 +344,11 @@
 <ol>
 <li>可知语句①实际上不是在当前对象的基类部分调用基类函数onResize，而是创建一个this所指对象基类部分的暂时的副本，并在其上调用onResize。这会导致基类成分更改并未落实，继承类成分更改倒是落实了。</li>
 <li>语句②实现了在this所指对象基类部分调用基类的onResize函数，在继承类部分调用继承类onResize函数。</li>
-<li><font color="red">不理解的点：<ul>
-<li>虚表指针所指的虚表中对应的函数指针不是已经被继承类的函数指针覆盖了吗，为何static_cast为何可以调用到基类的vitual函数，不是只能调用基类的数据成员部分加一个虚表指针，其已经被更新了吗。</li>
-<li>为何可以通过::调用基类的virtual函数，::不是只能访问static成员变量和函数吗。</li></ul></font><h2 id="dynamic-cast"><a href="#dynamic-cast" class="headerlink" title="dynamic_cast"></a>dynamic_cast</h2></li>
+<li><font color="red">不理解的点：<br>- 虚表指针所指的虚表中对应的函数指针不是已经被继承类的函数指针覆盖了吗，为何static_cast为何可以调用到基类的vitual函数，不是只能调用基类的数据成员部分加一个虚表指针，其已经被更新了吗。<br>- 为何可以通过::调用基类的virtual函数，::不是只能访问static成员变量和函数吗。</font>
 
-
+</li>
+</ol>
+<h2 id="dynamic-cast"><a href="#dynamic-cast" class="headerlink" title="dynamic_cast"></a>dynamic_cast</h2><ol>
 <li>使用其多是想在一个认定是derived class对象上执行derived class操作，但手头只有一个指向base的指针或引用，其执行速度相当慢</li>
 <li>两个方法避免使用其<ul>
 <li>使用容器并在其中存储直接指向derived class对象的指针（通常是智能指针），消除通过base class接口处理对象的需要。</li>
