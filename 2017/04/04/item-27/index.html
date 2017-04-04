@@ -81,18 +81,27 @@
 
 
 <meta name="description" content="关于类的成员函数有不理解处需后续阅读相关书籍后理解（红色）
-阅读关于四种C++风格casts部分（primer）">
+阅读关于四种C++风格casts部分（primer）
+
+- 若可以，尽量避免转型，特别在注重效率的代码中避免dynamic_casts。若有设计需要转型动作，尝试发展无需转型的替代设计。- 若转型必要，试着将其隐藏在某函数之后。用户可调用其而无需将转型放入自己代码中。- 宁可使用C++-style转型，也不要使用旧式转型。前者容易分辨，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="item 27">
 <meta property="og:url" content="http://yoursite.com/2017/04/04/item-27/index.html">
 <meta property="og:site_name" content="dourzz|豆豆">
 <meta property="og:description" content="关于类的成员函数有不理解处需后续阅读相关书籍后理解（红色）
-阅读关于四种C++风格casts部分（primer）">
-<meta property="og:updated_time" content="2017-04-04T13:23:45.591Z">
+阅读关于四种C++风格casts部分（primer）
+
+- 若可以，尽量避免转型，特别在注重效率的代码中避免dynamic_casts。若有设计需要转型动作，尝试发展无需转型的替代设计。- 若转型必要，试着将其隐藏在某函数之后。用户可调用其而无需将转型放入自己代码中。- 宁可使用C++-style转型，也不要使用旧式转型。前者容易分辨，">
+<meta property="og:image" content="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170404212711.jpg">
+<meta property="og:image" content="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE2.jpg">
+<meta property="og:updated_time" content="2017-04-04T13:51:39.987Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="item 27">
 <meta name="twitter:description" content="关于类的成员函数有不理解处需后续阅读相关书籍后理解（红色）
-阅读关于四种C++风格casts部分（primer）">
+阅读关于四种C++风格casts部分（primer）
+
+- 若可以，尽量避免转型，特别在注重效率的代码中避免dynamic_casts。若有设计需要转型动作，尝试发展无需转型的替代设计。- 若转型必要，试着将其隐藏在某函数之后。用户可调用其而无需将转型放入自己代码中。- 宁可使用C++-style转型，也不要使用旧式转型。前者容易分辨，">
+<meta name="twitter:image" content="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170404212711.jpg">
 
 
 
@@ -311,7 +320,11 @@
       
         <ol>
 <li><font color="red">关于类的成员函数有不理解处需后续阅读相关书籍后理解（红色）</font></li>
-<li>阅读关于四种C++风格casts部分（primer）<a id="more"></a>
+<li>阅读关于四种C++风格casts部分（primer）</li>
+<li><blockquote>
+<p><font color="red">- 若可以，尽量避免转型，特别在注重效率的代码中避免dynamic_casts。若有设计需要转型动作，尝试发展无需转型的替代设计。</font><br><font color="red">- 若转型必要，试着将其隐藏在某函数之后。用户可调用其而无需将转型放入自己代码中。</font><br><font color="red">- 宁可使用C++-style转型，也不要使用旧式转型。前者容易分辨，且有着分门别类的执掌。</font></p>
+<a id="more"></a>
+</blockquote>
 </li>
 </ol>
 <h1 id="尽量少做转型动作（Minimize-casting）"><a href="#尽量少做转型动作（Minimize-casting）" class="headerlink" title="尽量少做转型动作（Minimize casting）"></a>尽量少做转型动作（Minimize casting）</h1><h2 id="转型语法"><a href="#转型语法" class="headerlink" title="转型语法"></a>转型语法</h2><ol>
@@ -321,10 +334,28 @@
 <li>dynamic_cast:用来执行“安全向下转移”(safe downcastng)，即用来决定某对象是否归属继承体系中的某个类型</li>
 <li>reinterpret_cast:意图执行低级转型，实际动作（及结果）可能取决于编译器（即不可移植）。如将一个pointer to int转型为一个int</li>
 <li>static_cast:强迫隐式转换，如将non-cost转换为const，int转为double等。可执行上述多种转换的反向转换，但无法将const转为non-const</li>
+<li>新式更容易辨认，因而得以简化“找出类型系统在哪个地点别破坏的过程”；各转型动作目标愈窄化，编译器愈可能诊断出错误的应用。</li>
 </ul>
 </li>
 <li>转型并非什么也没做，只告诉编译器把某种类型视为另一种类型。实际上任何一种类型（无论隐式或显式）往往真令编译器编译出运行期间执行的代码。（基类指针指向一个继承类对象时，会有个偏移量变化，<font color="" red="">单一对象可能拥有一个以上的地址：以基类指向它时的地址和以继承类指向它时的地址</font>）<h2 id="this指针的转换问题"><a href="#this指针的转换问题" class="headerlink" title="this指针的转换问题"></a>this指针的转换问题</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Window &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onResize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		a += <span class="number">1</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is Window"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">	<span class="keyword">int</span> a = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> SpecialWindow :Window &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onResize</span><span class="params">()</span> </span>&#123;   </span><br><span class="line">		<span class="keyword">static_cast</span>&lt;Window&gt;(*<span class="keyword">this</span>).onResize(); <span class="comment">//①</span></span><br><span class="line">		Window::onResize();                    <span class="comment">//②</span></span><br><span class="line">		++b;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"this is SpecialWindow"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="string">" "</span> &lt;&lt; b &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="keyword">this</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> b = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	SpecialWindow sw;</span><br><span class="line">	sw.onResize();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
+</ol>
+<p>其中语句①的运行结果如下<br><img src="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE20170404212711.jpg" alt=""><br>语句②的运行结果如下<br><img src="http://7xtdo0.com1.z0.glb.clouddn.com/QQ%E6%88%AA%E5%9B%BE2.jpg" alt=""></p>
+<ol>
+<li>可知语句①实际上不是在当前对象的基类部分调用基类函数onResize，而是创建一个this所指对象基类部分的暂时的副本，并在其上调用onResize。这会导致基类成分更改并未落实，继承类成分更改倒是落实了。</li>
+<li>语句②实现了在this所指对象基类部分调用基类的onResize函数，在继承类部分调用继承类onResize函数。</li>
+<li><font color="red">不理解的点：<ul>
+<li>虚表指针所指的虚表中对应的函数指针不是已经被继承类的函数指针覆盖了吗，为何static_cast为何可以调用到基类的vitual函数，不是只能调用基类的数据成员部分加一个虚表指针，其已经被更新了吗。</li>
+<li>为何可以通过::调用基类的virtual函数，::不是只能访问static成员变量和函数吗。</li></ul></font><h2 id="dynamic-cast"><a href="#dynamic-cast" class="headerlink" title="dynamic_cast"></a>dynamic_cast</h2></li>
+
+
+<li>使用其多是想在一个认定是derived class对象上执行derived class操作，但手头只有一个指向base的指针或引用，其执行速度相当慢</li>
+<li>两个方法避免使用其<ul>
+<li>使用容器并在其中存储直接指向derived class对象的指针（通常是智能指针），消除通过base class接口处理对象的需要。</li>
+<li>通过base class内提供virtual函数</li>
+</ul>
+</li>
+<li>使用连串dynamic_cast行为应该被避免（代码大且慢，而且修改繁琐）</li>
 </ol>
 
       
@@ -486,7 +517,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#尽量少做转型动作（Minimize-casting）"><span class="nav-number">1.</span> <span class="nav-text">尽量少做转型动作（Minimize casting）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转型语法"><span class="nav-number">1.1.</span> <span class="nav-text">转型语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this指针的转换问题"><span class="nav-number">1.2.</span> <span class="nav-text">this指针的转换问题</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#尽量少做转型动作（Minimize-casting）"><span class="nav-number">1.</span> <span class="nav-text">尽量少做转型动作（Minimize casting）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转型语法"><span class="nav-number">1.1.</span> <span class="nav-text">转型语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#this指针的转换问题"><span class="nav-number">1.2.</span> <span class="nav-text">this指针的转换问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dynamic-cast"><span class="nav-number">1.3.</span> <span class="nav-text">dynamic_cast</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
